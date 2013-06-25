@@ -109,7 +109,6 @@ file_exist_check() {
 
 set -e
 set -u
-set -x
 
 # the default value of options are same to values in workload template
 host="localhost"
