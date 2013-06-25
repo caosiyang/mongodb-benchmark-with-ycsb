@@ -137,10 +137,10 @@ file_exist_check "$hostconf"
 # running workload
 while read remotehost
 do
-    ssh -o StrictHostKeyChecking=no root@$remotehost "cd /home/caosiyang/myycsb && ./mongodb_run.sh --host $host --port $port --recordcount $recordcount --operationcount $operationcount --recordlength $recordlength --readproportion $readproportion --updateproportion $updateproportion --target $target >log 2>&1" </dev/null &
+    ssh -o StrictHostKeyChecking=no root@$remotehost "cd /home/caosiyang/myycsb && ./mongodb_run.sh --host $host --port $port --recordcount $recordcount --operationcount $operationcount --recordlength $recordlength --readproportion $readproportion --updateproportion $updateproportion --target $target >result/run_stat_${recordlength}_${target}_${readproportion}_${updateproportion} 2>&1" </dev/null &
 done <"$hostconf"
 cd myycsb
-./mongodb_run.sh --host $host --port $port --recordcount $recordcount --operationcount $operationcount --recordlength $recordlength --readproportion $readproportion --updateproportion $updateproportion --target $target >log 2>&1 &
+./mongodb_run.sh --host $host --port $port --recordcount $recordcount --operationcount $operationcount --recordlength $recordlength --readproportion $readproportion --updateproportion $updateproportion --target $target >run_stat_${recordlength}_${target}_${readproportion}_${updateproportion} 2>&1 &
 cd ..
 
 # wait
