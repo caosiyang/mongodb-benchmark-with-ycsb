@@ -7,7 +7,7 @@
 
 # zip
 test -f myycsb.zip && rm -f myycsb.zip
-zip -q myycsb.zip -r myycsb -x myycsb/result/*
+zip myycsb.zip -r myycsb -x myycsb/result/*
 
 # dispatch myycsb.zip
 while read remotehost
