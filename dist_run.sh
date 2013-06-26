@@ -121,6 +121,7 @@ readproportion=1
 updateproportion=0
 target=1000
 hostconf="host.conf"
+clicnt=1
 
 if [ $# -lt 2 ] ; then
     usage
@@ -133,14 +134,22 @@ option_echo
 
 file_exist_check "$hostconf"
 
+# get client count
+while read remotehost
+do
+    clicnt=$((clicnt+1))
+done <"$hostconf"
+
+ops=$((target*clicnt))
+
 # running workload
 while read remotehost
 do
-    ssh -o StrictHostKeyChecking=no root@$remotehost "cd /home/caosiyang/myycsb && mkdir -p result && ./mongodb_run.sh --host $host --port $port --recordcount $recordcount --operationcount $operationcount --recordlength $recordlength --readproportion $readproportion --updateproportion $updateproportion --target $target >result/run_stat_${recordlength}_${target}_${readproportion}_${updateproportion} 2>&1" </dev/null &
+    ssh -o StrictHostKeyChecking=no root@$remotehost "cd /home/caosiyang/myycsb && mkdir -p result && ./mongodb_run.sh --host $host --port $port --recordcount $recordcount --operationcount $operationcount --recordlength $recordlength --readproportion $readproportion --updateproportion $updateproportion --target $target >result/run_stat_${recordlength}_${ops}_${readproportion}_${updateproportion} 2>&1" </dev/null &
 done <"$hostconf"
 cd myycsb
 mkdir -p result
-./mongodb_run.sh --host $host --port $port --recordcount $recordcount --operationcount $operationcount --recordlength $recordlength --readproportion $readproportion --updateproportion $updateproportion --target $target >result/run_stat_${recordlength}_${target}_${readproportion}_${updateproportion} 2>&1 &
+./mongodb_run.sh --host $host --port $port --recordcount $recordcount --operationcount $operationcount --recordlength $recordlength --readproportion $readproportion --updateproportion $updateproportion --target $target >result/run_stat_${recordlength}_${ops}_${readproportion}_${updateproportion} 2>&1 &
 cd ..
 
 # wait
