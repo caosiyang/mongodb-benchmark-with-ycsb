@@ -1,16 +1,30 @@
+# default options
+# they are same to values in workload template
+host="localhost"
+port=27017
+recordcount=10000
+operationcount=10000
+recordlength=1024
+fieldlength=$((recordlength/8))
+readproportion=1
+updateproportion=0
+target=1000
+
+
 usage() {
     echo "Usage: $0 [OPTION VALUE] ..."
     echo "OPTIONS:"
-    echo "  --host"
-    echo "  --port"
-    echo "  --recordcount"
-    echo "  --operationcount"
-    echo "  --recordlength"
-    echo "  --readproportion"
-    echo "  --updateproportion"
-    echo "  --target"
+    echo "  --host              default localhost"
+    echo "  --port              default 27017"
+    echo "  --recordcount       default 10000"
+    echo "  --operationcount    default 10000"
+    echo "  --recordlength      default 1024"
+    echo "  --readproportion    default 1"
+    echo "  --updateproportion  default 0"
+    echo "  --target            default 1000"
     echo "  -h, --help"
 }
+
 
 option_parse() {
     until [ $# -eq 0 ]
@@ -42,6 +56,7 @@ option_parse() {
     done
 }
 
+
 option_check() {
     # TODO
     if [ "$fieldlength" -lt 8 ]; then
@@ -50,8 +65,9 @@ option_check() {
     fi
 }
 
+
 option_echo() {
-    echo "OPTIONS:"
+    echo "Command options:"
     echo "  host             = $host"
     echo "  port             = $port"
     echo "  recordcount      = $recordcount"
@@ -62,12 +78,4 @@ option_echo() {
     echo "  readproportion   = $readproportion"
     echo "  updateproportion = $updateproportion"
     echo "  target           = $target"
-}
-
-file_exist_check() {
-    if [ ! -f "$1" ]
-    then
-        echo "not found $1"
-        exit 1
-    fi
 }

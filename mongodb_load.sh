@@ -10,28 +10,8 @@ source ./utils.sh
 set -e
 set -u
 
-# the default value of options are same to values in workload template
-host="localhost"
-port=27017
-recordcount=10000
-operationcount=10000
-recordlength=1024
-fieldlength=$((recordlength/8))
-readproportion=1
-updateproportion=0
-target=1000
-
-if [ $# -eq 1 ] ; then
-    if [ $1 == '-h' ] || [ $1 == '--help' ] ; then
-        usage
-        exit 0
-    fi
-    usage
-    exit 1
-fi
-
-if [ $# -lt 2 ] ; then
-    usage
+if ! [ -f mongodb_workload_template ] ; then
+    echo 'mongodb_workload_template not found'
     exit 1
 fi
 
@@ -42,7 +22,7 @@ option_echo
 workloadfilepath="result/workload_load_${recordlength}_${target}_${readproportion}_${updateproportion}"
 #resultfilepath="result/load_stat_${recordlength}_${target}_${readproportion}_${updateproportion}"
 
-file_exist_check mongodb_workload_template
+test -f  mongodb_workload_template || exit 1
 mkdir -p result
 cp mongodb_workload_template "$workloadfilepath"
 
@@ -64,7 +44,7 @@ echo "##############################"
 # loading workload
 mongo $host:$port/ycsb --eval "db.dropDatabase()"
 echo "loading @ `date`"
-bin/ycsb load mongodb -P $workloadfilepath
+ycsb-0.1.4/bin/ycsb load mongodb -P $workloadfilepath
 echo "DONE    @ `date`"
 
 exit 0

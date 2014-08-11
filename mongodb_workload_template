@@ -13,7 +13,7 @@ readallfields=true
 requestdistribution=zipfian
 
 mongodb.url=mongodb://localhost:27017
-mongodb.maxconnections=4000
+mongodb.maxconnections=2000
 mongodb.database=ycsb
 table=ycsb
 mongodb.writeConcern=none
@@ -22,5 +22,5 @@ mongodb.readPreference=primary
 measurementtype=timeseries
 timeseries.granularity=2000
 
-threadcount=100
+threadcount=10
 target=1000

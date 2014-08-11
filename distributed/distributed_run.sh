@@ -5,7 +5,7 @@
 # author: caosiyang <csy3228@gmail.com>
 # date: 2013/06/20
 
-. myycsb/utils.sh
+. utils.sh
 
 wait_all_done() {
     echo -n "waiting..."
@@ -38,29 +38,17 @@ wait_all_done() {
 set -e
 set -u
 
-# the default value of options are same to values in workload template
-host="localhost"
-port=27017
-recordcount=10000
-operationcount=10000
-recordlength=1024
-fieldlength=$((recordlength/8))
-readproportion=1
-updateproportion=0
-target=1000
 hostconf="host.conf"
-clicnt=1
-
-if [ $# -lt 2 ] ; then
-    usage
-    exit 1
-fi
+clicnt=0
 
 option_parse "$@"
 option_check
 option_echo
 
-file_exist_check "$hostconf"
+if ! [ -f "$hostconf" ] ; then
+    echo "$hostconf not found"
+    exit 1
+fi
 
 # get client count
 while read remotehost
@@ -73,12 +61,8 @@ ops=$((target*clicnt))
 # running workload
 while read remotehost
 do
-    ssh -o StrictHostKeyChecking=no root@$remotehost "cd /home/caosiyang/myycsb && mkdir -p result && ./mongodb_run.sh --host $host --port $port --recordcount $recordcount --operationcount $operationcount --recordlength $recordlength --readproportion $readproportion --updateproportion $updateproportion --target $target >result/run_stat_${recordlength}_${ops}_${readproportion}_${updateproportion} 2>&1" </dev/null &
+    ssh -o StrictHostKeyChecking=no root@$remotehost "cd /home/caosiyang/ycsb-0.1.4 && mkdir -p result && ./mongodb_run.sh --host $host --port $port --recordcount $recordcount --operationcount $operationcount --recordlength $recordlength --readproportion $readproportion --updateproportion $updateproportion --target $target >result/run_stat_${recordlength}_${ops}_${readproportion}_${updateproportion} 2>&1" </dev/null &
 done <"$hostconf"
-cd myycsb
-mkdir -p result
-./mongodb_run.sh --host $host --port $port --recordcount $recordcount --operationcount $operationcount --recordlength $recordlength --readproportion $readproportion --updateproportion $updateproportion --target $target >result/run_stat_${recordlength}_${ops}_${readproportion}_${updateproportion} 2>&1 &
-cd ..
 
 # wait
 wait_all_done
