@@ -9,6 +9,7 @@ readproportion=1
 updateproportion=0
 insertproportion=0
 scanproportion=0
+readmodifywriteproportion=0
 readallfields=true
 requestdistribution=zipfian
 
@@ -22,5 +23,4 @@ mongodb.readPreference=primary
 measurementtype=timeseries
 timeseries.granularity=2000
 
-threadcount=10
-target=1000
+threadcount=40

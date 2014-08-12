@@ -8,21 +8,23 @@ recordlength=1024
 fieldlength=$((recordlength/8))
 readproportion=1
 updateproportion=0
-target=1000
+threadcount=40
+target=""
 
 
 usage() {
     echo "Usage: $0 [OPTION VALUE] ..."
     echo "OPTIONS:"
-    echo "  --host              default localhost"
-    echo "  --port              default 27017"
-    echo "  --recordcount       default 10000"
-    echo "  --operationcount    default 10000"
-    echo "  --recordlength      default 1024"
-    echo "  --readproportion    default 1"
-    echo "  --updateproportion  default 0"
-    echo "  --target            default 1000"
-    echo "  -h, --help"
+    echo "  --host              host of mongodb instance, default: localhost"
+    echo "  --port              port of mongodb instance, default: 27017"
+    echo "  --recordcount       amount of records, default: 10000"
+    echo "  --operationcount    number of operations to perform, default: 10000"
+    echo "  --recordlength      length of record, default: 1024 bytes, 8 fields"
+    echo "  --readproportion    what proportion of operations should be reads, default: 1"
+    echo "  --updateproportion  what proportion of operations should be updates, default: 0"
+    echo "  --threadcount       amount of threads, default: 40"
+    echo "  --target            target throughput, default: not set"
+    echo "  -h, --help          usage information"
 }
 
 
@@ -44,6 +46,8 @@ option_parse() {
             readproportion="$2"
         elif [ "$1" == "--updateproportion" ]; then
             updateproportion="$2"
+        elif [ "$1" == "--threadcount" ]; then
+            threadcount="$2"
         elif [ "$1" == "--target" ]; then
             target="$2"
         elif [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
@@ -66,7 +70,7 @@ option_check() {
 }
 
 
-option_echo() {
+option_print() {
     echo "Command options:"
     echo "  host             = $host"
     echo "  port             = $port"
@@ -77,5 +81,6 @@ option_echo() {
     echo "  recordlength     = $recordlength"
     echo "  readproportion   = $readproportion"
     echo "  updateproportion = $updateproportion"
+    echo "  threadcount      = $threadcount"
     echo "  target           = $target"
 }
