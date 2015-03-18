@@ -19,35 +19,36 @@ option_parse "$@"
 option_check
 option_print
 
-workloadfilepath="result/workload_load_${recordlength}_${target}_${readproportion}_${updateproportion}"
-#resultfilepath="result/load_stat_${recordlength}_${target}_${readproportion}_${updateproportion}"
+worloadfile="workload/workload_load_${recordlength}_${operationcount}_${target}_r${readproportion}_w${updateproportion}"
 
 test -f  mongodb_workload_template || exit 1
-mkdir -p result
-cp mongodb_workload_template "$workloadfilepath"
+mkdir -p workload
+cp mongodb_workload_template "$worloadfile"
 
 # create workload file
-sed -i "s#mongodb.url=mongodb://localhost:27017#mongodb.url=mongodb://$host:$port#g" $workloadfilepath
-sed -i "s/recordcount=10000/recordcount=$recordcount/g" $workloadfilepath
-sed -i "s/operationcount=10000/operationcount=$operationcount/g" $workloadfilepath
-sed -i "s/fieldlength=128/fieldlength=$fieldlength/g" $workloadfilepath
-sed -i "s/readproportion=1/readproportion=$readproportion/g" $workloadfilepath
-sed -i "s/updateproportion=0/updateproportion=$updateproportion/g" $workloadfilepath
-sed -i "s/timeseries.granularity=2000/timeseries.granularity=10000/g" $workloadfilepath
-sed -i "s/threadcount=40/threadcount=$threadcount/g" $workloadfilepath
+sed -i "s#mongodb.url=mongodb://localhost:27017#mongodb.url=mongodb://$host:$port#g" $worloadfile
+sed -i "s/recordcount=10000/recordcount=$recordcount/g" $worloadfile
+sed -i "s/operationcount=10000/operationcount=$operationcount/g" $worloadfile
+sed -i "s/fieldlength=128/fieldlength=$fieldlength/g" $worloadfile
+sed -i "s/readproportion=1/readproportion=$readproportion/g" $worloadfile
+sed -i "s/updateproportion=0/updateproportion=$updateproportion/g" $worloadfile
+sed -i "s/timeseries.granularity=2000/timeseries.granularity=10000/g" $worloadfile
+sed -i "s/threadcount=40/threadcount=$threadcount/g" $worloadfile
 # NOTICE: not set 'target' so that make loading faster
 if [ -n "$target" ] ; then
-    echo "target=$target" >> $workloadfilepath
+    sed -i "/^target=/d" $worloadfile
+    echo "target=$target" >> $worloadfile
 fi
 
 echo "########## workload ##########"
-cat $workloadfilepath
+cat $worloadfile
 echo "##############################"
 
 # loading workload
-mongo $host:$port/ycsb --eval "db.dropDatabase()"
+#echo "drop database 'ycsb'"
+#mongo $host:$port/ycsb --eval "db.dropDatabase()"
 echo "loading @ `date`"
-ycsb-0.1.4/bin/ycsb load mongodb -P $workloadfilepath
+ycsb-0.1.4/bin/ycsb load mongodb -P $worloadfile
 echo "DONE    @ `date`"
 
 exit 0

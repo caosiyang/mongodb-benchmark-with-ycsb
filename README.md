@@ -1,11 +1,10 @@
-MongoDB benchmark with YCSB
-====
+# MongoDB benchmark with YCSB
 
-usage
-----
+
+## Usage
 
 ```
-# sh mongodb_load.sh -h
+# sh mongodb_load.sh --help
 Usage: mongodb_load.sh [OPTION VALUE] ...
 OPTIONS:
 --host              host of mongodb instance, default: localhost
@@ -20,7 +19,7 @@ OPTIONS:
 -h, --help          usage information
 
 
-# sh mongodb_run.sh -h
+# sh mongodb_run.sh --help
 Usage: mongodb_run.sh [OPTION VALUE] ...
 OPTIONS:
 --host              host of mongodb instance, default: localhost
@@ -34,3 +33,9 @@ OPTIONS:
 --target            target throughput, default: not set
 -h, --help          usage information
 ```
+
+
+## Note
+
+Workload will be generated on collection `ycsb.ycsb` of the mongo instance.
+You need to drop database `ycsb` before you generate a new workload.

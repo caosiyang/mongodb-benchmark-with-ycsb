@@ -19,33 +19,33 @@ option_parse "$@"
 option_check
 option_print
 
-workloadfilepath="result/workload_run_${recordlength}_${target}_${readproportion}_${updateproportion}"
-#resultfilepath="result/run_stat_${recordlength}_${target}_${readproportion}_${updateproportion}"
+workloadfile="workload/workload_run_${recordlength}_${operationcount}_${target}_r${readproportion}_w${updateproportion}"
 
-mkdir -p result
-cp mongodb_workload_template "$workloadfilepath"
+mkdir -p workload
+cp mongodb_workload_template "$workloadfile"
 
 # create workload file
-sed -i "s#mongodb.url=mongodb://localhost:27017#mongodb.url=mongodb://$host:$port#g" $workloadfilepath
-sed -i "s/recordcount=10000/recordcount=$recordcount/g" $workloadfilepath
-sed -i "s/operationcount=10000/operationcount=$operationcount/g" $workloadfilepath
-sed -i "s/fieldlength=128/fieldlength=$fieldlength/g" $workloadfilepath
-sed -i "s/readproportion=1/readproportion=$readproportion/g" $workloadfilepath
-sed -i "s/updateproportion=0/updateproportion=$updateproportion/g" $workloadfilepath
-sed -i "s/timeseries.granularity=2000/timeseries.granularity=10000/g" $workloadfilepath
-sed -i "s/threadcount=40/threadcount=$threadcount/g" $workloadfilepath
+sed -i "s#mongodb.url=mongodb://localhost:27017#mongodb.url=mongodb://$host:$port#g" $workloadfile
+sed -i "s/recordcount=10000/recordcount=$recordcount/g" $workloadfile
+sed -i "s/operationcount=10000/operationcount=$operationcount/g" $workloadfile
+sed -i "s/fieldlength=128/fieldlength=$fieldlength/g" $workloadfile
+sed -i "s/readproportion=1/readproportion=$readproportion/g" $workloadfile
+sed -i "s/updateproportion=0/updateproportion=$updateproportion/g" $workloadfile
+sed -i "s/timeseries.granularity=2000/timeseries.granularity=10000/g" $workloadfile
+sed -i "s/threadcount=40/threadcount=$threadcount/g" $workloadfile
 # NOTICE: not set 'target' so that make loading faster
 if [ -n "$target" ] ; then
-    echo "target=$target" >> $workloadfilepath
+    sed -i "/^target=/d" $worloadfile
+    echo "target=$target" >> $workloadfile
 fi
 
 echo "########## workload ##########"
-cat $workloadfilepath
+cat $workloadfile
 echo "##############################"
 
 # running workload
 echo "running @ `date`"
-ycsb-0.1.4/bin/ycsb run mongodb -P $workloadfilepath
+ycsb-0.1.4/bin/ycsb run mongodb -P $workloadfile
 echo "DONE    @ `date`"
 
 exit 0
