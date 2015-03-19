@@ -35,7 +35,7 @@ sed -i "s/timeseries.granularity=2000/timeseries.granularity=10000/g" $workloadf
 sed -i "s/threadcount=40/threadcount=$threadcount/g" $workloadfile
 # NOTICE: not set 'target' so that make loading faster
 if [ -n "$target" ] ; then
-    sed -i "/^target=/d" $worloadfile
+    sed -i "/^target=/d" $workloadfile
     echo "target=$target" >> $workloadfile
 fi
 
